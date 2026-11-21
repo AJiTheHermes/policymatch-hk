@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #12181f;
+  --color-slate: #414b56;
+  --color-brand: #123a5e;
+  --color-brand-dark: #0a2540;
+  --color-accent: #a4262c;
+  --color-paper: #ffffff;
+  --color-mist: #f4f3f0;
+  --color-line: #d5d1c9;
+  --color-link: #0b4ea2;
+  --color-focus: #ffc72c;
+  --color-ok: #10693f;
+  --color-warn: #8a5a00;
+
+  --font-sans: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", "Hiragino Sans TC",
+    system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 3px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--color-link);
+    text-underline-offset: 3px;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: #ffe9a8;
+    color: var(--color-ink);
+  }
+
+  /* Native form control polish: keep them plain, like a government form. */
+  select,
+  input[type="radio"] {
+    font: inherit;
+  }
+
+  select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-slate) 50%),
+      linear-gradient(135deg, var(--color-slate) 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) calc(50% + 1px),
+      calc(100% - 14px) calc(50% + 1px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 44px;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1024px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  .wrap-narrow {
+    width: 100%;
+    max-width: 720px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  .prose-gov p + p {
+    margin-top: 14px;
+  }
+
+  .stack > * + * {
+    margin-top: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Selected answer row. Written as plain CSS because the Tailwind
+   `has-[:checked]:` utility did not survive the static export build. */
+.opt-row:has(> input:checked) {
+  background-color: #e9eff5;
+  box-shadow: inset 3px 0 0 0 #123a5e;
+}
+
+/* Dark theme. The tokens above are read through CSS variables, so overriding
+   them here is enough: no component needs a second set of classes. */
+html[data-theme="dark"] {
+  --color-ink: #e9ecf0;
+  --color-slate: #aab6c2;
+  --color-brand: #0d2a45;
+  --color-brand-dark: #071a2b;
+  --color-paper: #14181d;
+  --color-mist: #1b2229;
+  --color-line: #303b46;
+  --color-link: #8fbaea;
+  --color-ok: #64c794;
+  --color-warn: #e2b464;
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .bg-white {
+  background-color: #1b2229;
+}
+
+/* ---------------------------------------------------------------- a11y additions */
+
+/* Text size. Pixel type does not respond to a root font-size change, so the
+   whole page is scaled and reset again for print. */
+html[data-scale="large"] body {
+  zoom: 1.12;
+}
+html[data-scale="xlarge"] body {
+  zoom: 1.25;
+}
+
+/* A visible ring on every keyboard focus, not just the inputs that styled one. */
+:focus-visible {
+  outline: 3px solid #b07d10;
+  outline-offset: 2px;
+}
+
+/* Motion is decoration here; honour the OS setting. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The printable case sheet: white paper in both themes, no chrome, real A4. */
+.sheet {
+  background: #fff;
+  color: #12181f;
+  padding: 8mm 6mm;
+  border: 1px solid var(--color-line);
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 14mm;
+  }
+  html[data-scale] body {
+    zoom: 1 !important;
+  }
+  .no-print,
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+  .sheet {
+    padding: 0;
+    border: 0;
+  }
+  body,
+  main {
+    background: #fff !important;
+    color: #12181f !important;
+  }
+  a {
+    color: #12181f !important;
+    text-decoration: none !important;
+  }
+}
